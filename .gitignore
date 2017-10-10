@@ -1,0 +1,7 @@
+# Emacs auto generated stuff
+etc/emacs/elpa
+etc/emacs/auto-save-list
+etc/emacs/smex-items
+
+# Emacs auto save 
+*~

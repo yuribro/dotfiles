@@ -13,3 +13,4 @@ then
 fi
 
 [ ! -e ${HOME}/.Xresources ] && ln -s ${HOME}/etc/.Xresources ${HOME}/.Xresources
+[ ! -e ${HOME}/.emacs.d ] && ln -s ${HOME}/etc/emacs ${HOME}/.emacs.d

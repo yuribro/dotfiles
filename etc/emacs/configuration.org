@@ -1,0 +1,360 @@
+#+TITLE: Emacs configuration
+
+* Credits
+
+This configuration is shamelessly adapted from [[http://harryrschwartz.com/][Harry S. Schwartz]] ([[https://github.com/hrs/dotfiles/tree/master/emacs.d][GitHub repo]]) after watching his excellent [[https://www.youtube.com/watch?v=SzA2YODtgK4][Getting Started with Org Mode]].
+
+* Package Management
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives 
+               '("melpa" . "http://melpa.org/packages/") t)
+  (add-to-list 'package-archives
+               '("org" . "http://orgmode.org/elpa/") t)
+
+  ;; Don't need to check every time.
+  ;(when (not package-archive-contents)
+  ;   (package-refresh-contents))
+  (package-initialize)
+
+  (add-to-list 'load-path (concat user-emacs-directory "packages/"))
+#+END_SRC
+
+
+Install needed pacakges on first use
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+END_SRC
+
+* General Configuration
+
+Run GC less often
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold 20000000)
+#+END_SRC
+
+Change all the questions to shorted versions
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+
+Make sure when exiting Emacs
+#+BEGIN_SRC emacs-lisp
+ (setq confirm-kill-emacs 'y-or-n-p)
+#+END_SRC
+
+For better navigation by sentence, require only a single space after a period.
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+
+  (when (fboundp 'windmove-default-keybindings)
+    (windmove-default-keybindings))
+
+
+    ;(use-package saveplace :ensure t :init)
+    ;(setq-default save-place t)
+
+    (when window-system
+      (setq frame-title-format '(buffer-file-name "%b (%f)" ("%b"))))
+
+    (global-auto-revert-mode 1)
+    (setq echo-keystrokes 0.1)
+    (auto-compression-mode t)
+    (global-font-lock-mode t)
+
+    (setq locale-coding-system 'utf-8) ; pretty
+    (set-terminal-coding-system 'utf-8) ; pretty
+    (set-keyboard-coding-system 'utf-8) ; pretty
+    (set-selection-coding-system 'utf-8) ; please
+    (prefer-coding-system 'utf-8) ; with sugar on top
+
+    ; TODO
+    (setq shift-select-mode nil)
+
+    ;(bind-keys*
+    ; ("M-/" . hippie-expand)
+    ; ("C-s" . isearch-forward-regexp)
+    ; ("C-r" . isearch-backward-regexp)
+    ; ("C-M-s" . isearch-forward)
+    ; ("C-M-r" . isearch-backward))
+
+
+     ;(load "~/.emacs.d/themes/color-theme-molokai.el")
+     (load "~/.emacs.d/themes/subdued-theme.el")
+
+    (dolist (hook '(org-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode 1))))
+
+    ; (load-file '"funcs.el")
+    (put 'erase-buffer 'disabled nil)
+
+    (setq-default indicate-buffer-boundaries 'left)
+    (setq-default indicate-empty-lines +1)
+
+    (setq redisplay-dont-pause t
+          scroll-margin 1
+          scroll-step 1
+          scroll-conservatively 10000
+          scroll-preserve-screen-position 1)
+
+
+    (require 'uniquify)
+    (setq uniquify-buffer-name-style 'forward)
+
+    ; (setq custom-file "~/.emacs.d/custom.el")
+    ; (load custom-file)
+
+    (use-package smex)
+    (global-set-key (kbd "M-x") 'smex)
+
+#+END_SRC
+
+* UI
+
+Quiet start up - Lets start with an empty buffer
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message nil)
+#+END_SRC
+
+I want a pretty font:
+#+BEGIN_SRC emacs-lisp
+  (setq myfont "Fantasque Sans Mono")
+  (set-face-attribute 'default nil :font myfont :height 120)
+  ;(print (font-family-list))
+
+#+END_SRC
+
+Use a fallback font with lots of unicode symbols
+#+BEGIN_SRC emacs-lisp
+ (set-fontset-font "fontset-default" nil 
+                    (font-spec :size 20 :name "Hack"))
+
+#+END_SRC
+
+Configure the mode line
+#+BEGIN_SRC emacs-lisp
+  (setq display-time-day-and-date t
+                  display-time-format "     T: %a %b %d %R "
+                  display-time-interval 60
+                  display-time-default-load-average nil)
+  (display-time)
+
+  (setq battery-mode-line-format "   Bat: %b%p%% Left: %t")
+  (display-battery-mode t)
+
+#+END_SRC
+
+
+Remove all the chrome 
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+(when window-system
+  (scroll-bar-mode -1))
+#+END_SRC
+
+Show lambda nice:
+#+BEGIN_SRC emacs-lisp
+(global-prettify-symbols-mode t)
+#+END_SRC
+
+
+Small ui settings 
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode 1)
+
+(setq line-number-mode t)
+(setq column-number-mode t)
+
+(setq-default cursor-type 'box)
+(blink-cursor-mode -1)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package powerline)
+(powerline-default-theme)
+#+END_SRC
+
+* Org
+Define folder and main files:
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/org")
+
+
+(defun org-file-path (filename)
+  "Return the absolute address of an org file, given its relative name."
+  (concat (file-name-as-directory org-directory) filename))
+(setq org-index-file (org-file-path "index.org"))
+
+(setq org-archive-location
+      (concat (org-file-path "archive.org") "::* From %s"))
+
+(setq org-agenda-files (list org-index-file))
+#+END_SRC
+
+Show bullets in a nice way
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets)
+(add-hook 'org-mode-hook
+          (lambda ()
+            (org-bullets-mode t)))
+#+END_SRC
+
+Highlight source code inside source blocks while editing, and allow TAB to work as in the language buffer.
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+#+END_SRC
+
+Add exporter for confluence:
+#+BEGIN_SRC emacs-lisp
+(use-package ox-confluence)
+#+END_SRC
+
+My week starts on Sunday
+#+BEGIN_SRC emacs-lisp
+(setq calendar-week-start-day 0)
+(setq org-agenda-start-on-weekday 0)
+#+END_SRC
+
+Old org settings (split and explain later)
+#+BEGIN_SRC emacs-lisp
+  (setq org-startup-indented t)
+  (setq org-startup-folded "showall")
+
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+
+  (setq org-capture-templates
+        '(("g" "Guardicore Issue" entry (file+headline "~/org/Guardicore.org" "General Tasks")
+           "* TODO %?\n %i\n Branch: %^{prompt|branch}\n Issue: https://guardicore.atlassian.net/browse/GC-%^{prompt|issue-number}")))
+
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cc" 'org-capture)
+  (global-set-key "\C-cb" 'org-iswitchb)
+
+
+  (setq org-special-ctrl-a/e t)
+  (setq org-special-ctrl-k t)
+
+  (setq org-catch-invisible-edits t)
+
+  (setq org-todo-keywords
+        '((sequence "TODO" "NEXT" "WAITING" "|" "DONE")
+          (sequence "|" "CANCELED")))
+
+  (setq org-log-done 'time)
+
+#+END_SRC
+
+
+** Babel
+
+Allow python, emacs lisp, ledger, gnuplot source code to run via babel.
+Don't ask for confirmation when running code snippet
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (gnuplot . t)
+     (ledger . t))
+   )
+
+  ; (setq org-confirm-babel-evaluate nil)
+#+END_SRC
+
+* Editing settings
+Use company mode 
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook 'global-company-mode)
+#+END_SRC
+
+Use pretty arrow instead of ellipsis
+#+BEGIN_SRC emacs-lisp
+
+; (setq org-ellipsis "⤵")
+
+#+END_SRC
+
+Use ido mode
+#+BEGIN_SRC emacs-lisp
+  (ido-mode 1)
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (use-package ido-completing-read+)
+#+END_SRC
+
+Use vertical mode 
+#+BEGIN_SRC emacs-lisp
+  (use-package ido-vertical-mode)
+  (ido-vertical-mode 1)
+  (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+#+END_SRC
+
+
+Use smex for M-x with ido
+#+BEGIN_SRC emacs-list
+(smex-initialize)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+#+END_SRC
+
+* git
+
+Highlight diff in source code
+
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl)
+
+  (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
+  (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode)
+
+  (use-package magit)
+#+END_SRC
+
+* Python
+
+Configure jedi and company mode
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell)
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+  (defun my/python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
+
+  (add-hook 'python-mode-hook 'my/python-mode-hook)
+#+END_SRC
+
+* Ledger
+Make sure we open ledger files with ledger mode
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ledger-mode)
+  (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+#+END_SRC
+* D Mode
+#+BEGIN_SRC emacs-lisp
+  (setq-default c-basic-offset 4
+                tab-width 4
+                indent-tabs-mode -1)
+#+END_SRC
+* Git
+
+
