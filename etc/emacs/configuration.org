@@ -9,7 +9,7 @@ This configuration is shamelessly adapted from [[http://harryrschwartz.com/][Har
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (add-to-list 'package-archives 
-               '("melpa" . "http://melpa.org/packages/") t)
+               '("melpa" . "http://www.mirrorservice.org/sites/melpa.org/packages/") t)
   (add-to-list 'package-archives
                '("org" . "http://orgmode.org/elpa/") t)
 
@@ -220,7 +220,7 @@ Highlight source code inside source blocks while editing, and allow TAB to work 
 
 Add exporter for confluence:
 #+BEGIN_SRC emacs-lisp
-(use-package ox-confluence)
+; (use-package ox-confluence)
 #+END_SRC
 
 My week starts on Sunday
@@ -280,7 +280,9 @@ Don't ask for confirmation when running code snippet
 * Editing settings
 Use company mode 
 
+
 #+BEGIN_SRC emacs-lisp
+  (use-package company)
   (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
 
@@ -346,7 +348,7 @@ Configure jedi and company mode
 Make sure we open ledger files with ledger mode
 
 #+BEGIN_SRC emacs-lisp
-  (require 'ledger-mode)
+  (use-package  ledger-mode)
   (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 #+END_SRC
 * D Mode

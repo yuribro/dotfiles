@@ -1,7 +1,7 @@
 
 (require 'package)
 (add-to-list 'package-archives 
-             '("melpa" . "http://melpa.org/packages/") t)
+             '("melpa" . "http://www.mirrorservice.org/sites/melpa.org/packages/") t)
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/") t)
 
@@ -145,7 +145,7 @@
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 
-(use-package ox-confluence)
+; (use-package ox-confluence)
 
 (setq calendar-week-start-day 0)
 (setq org-agenda-start-on-weekday 0)
@@ -186,6 +186,7 @@
 
 ; (setq org-confirm-babel-evaluate nil)
 
+(use-package company)
 (add-hook 'after-init-hook 'global-company-mode)
 
 ; (setq org-ellipsis "⤵")
@@ -194,7 +195,9 @@
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (use-package ido-completing-read+)
+
 (use-package ido-vertical-mode)
+(ido-vertical-mode 1)
 (setq ido-vertical-define-keys 'C-n-and-C-p-only)
 
 (use-package diff-hl)
@@ -213,7 +216,7 @@
 
   (add-hook 'python-mode-hook 'my/python-mode-hook)
 
-(require 'ledger-mode)
+(use-package  ledger-mode)
 (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
 (setq-default c-basic-offset 4
