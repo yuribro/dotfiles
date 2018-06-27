@@ -4,7 +4,10 @@ Xft*antialias: True
 Xft*hinting:   Full
 !-*-}
 
-URxvt*font:           xft:Terminus:size=10
+URxvt*font: xft:Fantasque Sans Mono:size=14:antialias=true
+URxvt*boldFont: xft:Fantasque Sans Mono:bold:size=14:antialias=true
+
+!URxvt*font:           xft:Terminus:size=12
 URxvt.scrollBar: false
 
 *background: #0f0f0f
@@ -34,3 +37,5 @@ URxvt.scrollBar: false
 !white
 *color7:  #efefef
 *color15: #efefef
+
+Rxvt.perl-ext-common: selection-to-clipboard
