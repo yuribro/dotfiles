@@ -91,7 +91,8 @@ For better navigation by sentence, require only a single space after a period.
 
 
      ;(load "~/.emacs.d/themes/color-theme-molokai.el")
-     (load "~/.emacs.d/themes/subdued-theme.el")
+     ;(load "~/.emacs.d/themes/subdued-theme.el")
+    (load-theme 'base16-default-dark t)
 
     (dolist (hook '(org-mode-hook))
       (add-hook hook (lambda () (flyspell-mode 1))))
@@ -131,7 +132,7 @@ Quiet start up - Lets start with an empty buffer
 I want a pretty font:
 #+BEGIN_SRC emacs-lisp
   (setq myfont "Fantasque Sans Mono")
-  (set-face-attribute 'default nil :font myfont :height 120)
+  (set-face-attribute 'default nil :font myfont :height 140)
   ;(print (font-family-list))
 
 #+END_SRC
@@ -151,8 +152,8 @@ Configure the mode line
                   display-time-default-load-average nil)
   (display-time)
 
-  (setq battery-mode-line-format "   Bat: %b%p%% Left: %t")
-  (display-battery-mode t)
+  (setq battery-mode-line-format "   Bat: %b%p%%  Left: %t")
+  (display-battery-mode 1)
 
 #+END_SRC
 
