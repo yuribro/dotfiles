@@ -17,13 +17,13 @@ install_file() {
 	
 }
 
-install_file .Xresources
+# install_file .Xresources
 install_file .tmux.conf
 install_file .emacs.d
 
 if [ ! -d ${HOME}/.config/base16-shell/ ]
 then
 	git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
-	source /home/yuri/repos/dotfiles/etc/base16.sh
+	source ${HOME}/repos/dotfiles/etc/base16.sh
 fi
 
